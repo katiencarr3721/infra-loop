@@ -15,7 +15,7 @@ Invoke with **`/infra-loop`**.
 - `build_library.py` — rebuilds the skill-library `index.html`.
 
 ## Works with Microsoft 365 or Google Workspace
-Intake asks the ecosystem first and adapts: Outlook/Teams/SharePoint **or** Gmail/Google Chat/Google Drive. Local AI sessions apply to both. Connectors are discovered at run time, so tool-name changes don't break it. Can add other areas in "Other" if they were you are consistently working/building.
+Intake asks the ecosystem first and adapts: Outlook/Teams/SharePoint **or** Gmail/Google Chat/Google Drive. Local AI sessions apply to both. Connectors are discovered at run time, so tool-name changes don't break it.
 
 ## Privacy
 Each brain is built only from that person's own sources; one person's brain never seeds another's. The only shared element is the optional, de-identified skill-craft primer (generic method, no names/decisions/metrics). All persistent files redact confidential/sensitive info.
