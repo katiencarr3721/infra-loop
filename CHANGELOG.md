@@ -1,5 +1,29 @@
 # Changelog — infra-loop
 
+## 2.1.0 — 2026-10-23
+
+### Fixed
+- Scheduled jobs couldn't reach the brain: Phase 4 now creates scheduled tasks that require the person's computer, with the Live Brain folder attached, in the person's timezone, deduplicated against existing tasks, with ids recorded in config.
+- Stale hardcoded tool names (folder request, skills listing, session tools) replaced with ToolSearch discovery throughout.
+- Skill library index showed blank Status/Backlog/Drafted: the weekly HANDS step now writes a standard `metadata` block, and `build_library.py` reads nested metadata, quoted values, and folded descriptions. Adds Version and Sample columns and dark mode.
+- Phase 1b ordering contradiction (generate → ask → regenerate vs ask → generate) removed along with the invite.
+- Identifiability wording drifted across six files (e.g. "finances" excluded in one place only). The policy now lives only in `CLAUDE_template.md`, with business vs personal finances made explicit; every other file points to it.
+
+### Changed
+- Retired `make_reminder_ics.py` and the `.ics` invite. A quarterly scheduled nudge (push and/or email) replaces it and points at the playbook, so the web-chat prompts now have a single home.
+- Web-chat pull now runs in claude.ai (where past-chat search exists); its digest is saved to `raw/` and folded in from Cowork.
+- Session mining reads Claude Code / Cowork transcript files on the person's computer instead of assuming session tools.
+- Intake regrouped into three rounds that fit AskUserQuestion's 4-question / 4-option limits; calendar-platform question removed; nudge channel added. Questions live only in `PROMPTS.md`.
+- Hidden base64/rot13 acknowledgments replaced by a plain Acknowledgments section in README.
+- Removed the separate in-body activation gate (the description already carries it); `version` moved under `metadata`.
+- README no longer tells users to uninstall earlier variants.
+
+### Added
+- §2e: Claude memory as a read-only, work-signal-only source; included in daily capture.
+- §6: quarterly web-chat nudge prompt.
+- `config.md`: Claude memory and web-chat sources, `transcripts_root`, task ids, `last_web_chat_pull`.
+- New SELF_TEST gates: no encoded strings, no hardcoded tool names, single-source checks, scheduled-task reachability.
+
 ## 2.0.0 — 2026-07-05
 
 ### Fixed

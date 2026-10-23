@@ -1,43 +1,48 @@
-# SELF_TEST — infra-loop v2.0.0
+# SELF_TEST — infra-loop v2.1.0
 
 ## What "good" looks like
+
 A correct deploy:
-1. **Activation gate held** — only runs on the literal `/infra-loop` string.
-2. **Folder guard** — requests a mounted folder before intake if none is connected.
-3. **Intake asks ecosystem FIRST** (Microsoft 365 / Google / Both / Neither) and adapts sources + connectors; captures timezone AND calendar platform (Outlook / Google / Apple); states a concrete agent-run cost estimate and gets acknowledgment.
-4. **Identifiability chosen and threaded** — identifiable (default) or redacted, recorded in config.md, present in CLAUDE.md and every §2/§3/§4/§5 prompt, with the always-excluded floor; everything leaving the brain ships redacted.
-5. **Phase 1 copies CHAT_MINING_PLAYBOOK.md into raw/** — the reminder must find it in 90 days without this skill loaded.
-6. **Phase 1b is surfaced explicitly** — .ics generated to an ABSOLUTE path inside the brain, first manual pull prompted via AskUserQuestion before Phase 2; if skipped, `--first` = today+30d.
-7. **Calendar invite is correct** — opens in Outlook, Google Calendar, and Apple Calendar; fires at the right LOCAL time in any IANA timezone year-round; recurs every 90 days; carries the canonical paste-prompts; no identifying strings.
-8. **Mining is resumable** — `history/_mining_status.md` written before launch; waves of ≤4; interrupted runs resume without redoing done blocks.
-9. **Injection defense** — GLOBAL LINE 1 present in every prompt that reads mined content.
-10. **Mining agents discover connectors via ToolSearch** (MS vs Google), skip+flag deferred sources, and handle Both/Neither.
-11. **Consolidation builds the FULL wiki doc set**; skills stay draft-only; deliverable skills package a REAL `SAMPLE_OUTPUT.<ext>`.
+1. **Activation** — runs only on the literal `/infra-loop` string.
+2. **Folder guard** — the person's computer is reachable and a real folder is attached before intake.
+3. **Intake follows `PROMPTS.md → §0`** — three rounds; ecosystem first; no AskUserQuestion call exceeds 4 questions or 4 options; concrete cost estimate acknowledged before mining.
+4. **Identifiability chosen and threaded** — recorded in `config.md`; full policy appears ONLY in the brain's `CLAUDE.md`; every agent and job prompt carries GLOBAL LINE 2 pointing to it.
+5. **Phase 1 copies `CHAT_MINING_PLAYBOOK.md` into `raw/`.**
+6. **Phase 1b is surfaced explicitly** — first web-chat pull offered via AskUserQuestion before Phase 2. If skipped, a one-shot nudge is scheduled at today + 30 days.
+7. **Mining is resumable** — `history/_mining_status.md` written before launch; waves of ≤4; interrupted runs resume without redoing done blocks.
+8. **Injection defense** — GLOBAL LINE 1 in every prompt that reads mined content.
+9. **Tools discovered via ToolSearch** — no hardcoded tool names in any prompt; missing sources skipped and flagged.
+10. **Claude memory mined read-only, work signal only** — no memory writes; personal content filtered by the floor.
+11. **Scheduled tasks can reach the brain** — require the person's computer, have the Live Brain folder attached, use the person's timezone, are deduplicated against existing tasks, and their ids are recorded in `config.md`.
+12. **Consolidation builds the FULL wiki doc set**; skills stay draft-only; deliverable skills package a REAL `SAMPLE_OUTPUT.<ext>`; drafted SKILL.md frontmatter carries the `metadata` block `build_library.py` reads.
 
 ## Critical gates (any miss = fail)
-- [ ] No employer name, role/industry jargon, product-specific skill-name prefixes, or other identifying terms in any shipped file. (The skill PACKAGE is generic; the person's BRAIN follows their identifiability choice.)
-- [ ] `.ics` parses in a real iCal library; US built-in zones → TZID + VTIMEZONE + DST rules + infinite RRULE; all other zones → per-occurrence UTC RDATEs computed in the person's zone (no seasonal drift); ≥1 VALARM.
-- [ ] Ecosystem choice (incl. Both/Neither) present in intake and threaded into config + all mining prompts.
-- [ ] Identifiability choice present in intake and threaded into config + CLAUDE.md + all prompts.
-- [ ] Phase 1 copies the playbook into `raw/`; Phase 1b uses an absolute `--out` path inside the brain.
-- [ ] Phase 1b prompts the first manual pull explicitly; skip path regenerates with `--first <today+30d>`.
-- [ ] `history/_mining_status.md` exists before any mining agent launches.
-- [ ] Injection-defense line present in §2a–§2d, §3, §4, §5.
 
-## Test log — verified 2026-07-05 (v2.0.0)
-All run with the `icalendar` library parsing each output; 11/11 PASS:
-- `--tz America/New_York` → `DTSTART;TZID=America/New_York:20261003T090000` + VTIMEZONE (EST/EDT, 2nd-Sun-Mar / 1st-Sun-Nov) + `RRULE:FREQ=DAILY;INTERVAL=90`. PASS.
-- `--tz Australia/Sydney`, first 2026-10-03 09:00, crossing DST start (Oct 4): occurrence 1 = `20261002T230000Z` (AEST +10), occurrence 2 = `20261231T220000Z` (AEDT +11) — 09:00 local on BOTH sides. PASS.
-- `--tz Europe/London` crossing DST end: `20261003T080000Z` (BST) then `20270101T090000Z` (GMT) — 09:00 local both sides. PASS.
-- `--tz Asia/Kolkata` (half-hour offset, no DST): every occurrence `T033000Z` = 09:00 IST. PASS.
-- `--time` accepts `0900` / `900` / `9:00` / `09:00`; rejects `2500` ("out of range") and `abc` ("must be HHMM"). PASS.
-- Unknown zone (`Mars/Olympus`) exits with "Unknown IANA timezone". PASS.
-- Non-US output: 21 occurrences = DTSTART + 20 RDATE lines; 2 VALARMs. PASS.
-- `build_library.py`: dummy `.skill` (SKILL.md + SELF_TEST.md) → index.html row with name, `st-drafted` badge, ✓ in the Self-test column; owner name read from `../config.md`. PASS.
+- [ ] No employer name, person's name, role/industry jargon, or other identifying terms in any shipped file. (Acknowledgments in README are credits to public figures, not user data.)
+- [ ] No obfuscated or encoded strings in any shipped file.
+- [ ] No hardcoded `mcp__…` tool names in SKILL.md, PROMPTS.md, or SKILL_CRAFT_PRIMER.md.
+- [ ] Policy text appears in full only in `CLAUDE_template.md`; other files point to it. (One exception: playbook PROMPT 1 runs in claude.ai, where `CLAUDE.md` can't be loaded, so it carries a one-line version of the floor.)
+- [ ] Intake questions appear only in `PROMPTS.md`; web-chat prompts appear only in `CHAT_MINING_PLAYBOOK.md`.
+- [ ] Every scheduled task is set to require the person's computer, with the Live Brain folder attached.
+- [ ] `history/_mining_status.md` exists before any mining agent launches.
+- [ ] Injection-defense line present in §2a–§2e, §3, §4, §5, §6.
+- [ ] `build_library.py` renders status / version / backlog / drafted from a §5-format SKILL.md.
+
+## Test log — verified 2026-10-23 (v2.1.0)
+
+`build_library.py`, run against four packages, PASS:
+- New-format package (folded `description: >`, nested `metadata` with inline comment and quoted date, SELF_TEST + SAMPLE_OUTPUT.pptx) → row shows `tested`, 0.2.0, B-12, 2026-10-20, ✓ self-test, ✓ sample.
+- Old-format package (top-level status/backlog_id/drafted, quoted description containing a colon) → `parked`, B-3, 2026-07-01, colon preserved.
+- Package with no frontmatter → falls back to filename, `draft`.
+- Corrupt zip → listed by filename, no crash.
+- Library title read from `../config.md` ("Skill Library — <name>"); an unfilled `{{PERSON}}` placeholder is ignored.
+
+Static checks, PASS: no `mcp__` names in SKILL.md / PROMPTS.md / primer; GLOBAL LINE 1 in §2a–§2e, §3–§6; cost examples recomputed (last year: 4 blocks × 2 + 6 + 3 = 17; 5 years: 20 × 2 + 9 = 49).
 
 ## Known limitations
-- Non-US-built-in zones pre-compute a finite horizon (default 21 occurrences ≈ 5 years at 90 days); regenerate the invite after that. The four built-in US zones recur indefinitely.
-- Web chats remain MANUAL by design: connectors cannot reach claude.ai web history and it ages out (~90 days). The playbook + recurring reminder are the mitigation, not a fix.
-- Web-chat coverage is patchy, not a clean cutoff — recent months enumerate fully; older months may only surface via keyword search; Project-scoped chats may need mining from inside the Project. The brain must state coverage honestly.
+
+- claude.ai web chats can't be read by any scheduled job. Memory carries their durable facts automatically; the reasoning detail needs the quarterly manual pull.
+- Session transcripts are read from files on the person's computer. Cowork's own transcript location may be protected from the device shell; when it is, the brain says so and relies on outputs, memory, and the estate inventory instead.
+- Scheduled tasks run only while the person's computer is on with the Claude desktop app running. Catch-up logic backfills missed days.
 - Chat/IM connector history is often shallow when date-filtered; agents flag the gap rather than fabricate.
-- Connector tool names drift over time; run-time ToolSearch discovery mitigates but cannot eliminate breakage.
+- Connector tool names drift; run-time ToolSearch discovery mitigates but can't eliminate breakage.
